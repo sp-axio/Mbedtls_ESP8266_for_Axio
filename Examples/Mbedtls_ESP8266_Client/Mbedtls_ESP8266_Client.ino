@@ -28,7 +28,6 @@ Distributed as-is; no warranty is given.
 //#include <SoftwareSerial.h> 
 #include "ESP8266WiFi.h"
 
-extern Uart Serial;
 //////////////////////////////
 // WiFi Network Definitions //
 //////////////////////////////
@@ -41,6 +40,7 @@ const char myPSK[] = "mypsk";
 // HTTP Strings //
 //////////////////
 const char destServer[] = "example.com";
+int mbedtlsPort = 4433;
 const String htmlHeader = "HTTP/1.1 200 OK\r\n"
                           "Content-Type: text/html\r\n"
                           "Connection: close\r\n\r\n"
@@ -81,9 +81,15 @@ void initializeESP8266()
   // It returns either true or false -- indicating whether
   // communication was successul or not.
   // true
-  int test = esp8266.begin();
-  if (test != true)
+  int retVal = esp8266.begin();
+  if (retVal != true)
   {
+    Serial.println(F("Error talking to ESP8266."));
+    errorLoop(test);
+  }
+  // set esp8266 single mode
+  retVal = setMux(0);
+  if(!retVal){
     Serial.println(F("Error talking to ESP8266."));
     errorLoop(test);
   }
@@ -157,14 +163,17 @@ void displayConnectInfo()
   Serial.print(F("My IP: ")); Serial.println(myIP);
 }
 
-void clientDemo()
+void mbedtlsClientDemo()
 {
-  Serial.println("Start Mbedtls communication");
+  int retVal;
+  unsigned char buf[1024] = {0,};
+
+  Serial.println("Start Mbedtls client");
   ESP8266Mbedtls mbedtls;
   
   Serial.println("try to connect to server...");
-  int ret = mbedtls.connect(destServer, 4433, 0); 
-  if( ret == 1){
+  retVal = mbedtls.connect(destServer, mbedtlsPort, 0); 
+  if( retVal == 1){
      Serial.println("connect success!");
   }
   else{
@@ -174,8 +183,8 @@ void clientDemo()
     
   mbedtls.setupSSL();
    
-  ret = mbedtls.connectSSL();
-  if( ret == 0){
+  retVal = mbedtls.connectSSL();
+  if( retVal == 0){
      Serial.println("SSL connect success!");
   }
   else{
@@ -184,18 +193,14 @@ void clientDemo()
   }
 
   Serial.println("Write to SSL server..");
-  ret = mbedtls.writeSSL();
-  if( ret == 0){
-     Serial.println("SSL write success!");
-  }
-  else{
+  retVal = mbedtls.writeSSL();
+  if( retVal != 0){
      Serial.println("SSL write failed!");
      return;
   }
   
-  Serial.println("Read from SSL Server...");
-  unsigned char buf[1024] = {0,};
   mbedtls.readSSL(buf, 1023);
+  Serial.println("Read from SSL Server...");
   Serial.println("================== received begin =========");
   Serial.println((char *)buf);
   Serial.println("================== received done =========");
@@ -230,7 +235,7 @@ void setup()
   displayConnectInfo();
 
   serialTrigger(F("Press any key to connect client."));
-  clientDemo();
+  mbedtlsClientDemo();
 }
 
 void loop() 

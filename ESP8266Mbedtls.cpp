@@ -38,7 +38,7 @@ ESP8266Mbedtls::ESP8266Mbedtls(uint8_t sock)
 
 uint8_t ESP8266Mbedtls::setupSSL()
 {
-	UART_PrintInit(&(Serial.uart));
+	UART_PrintInit(Serial.getHandle());
 	mbedtls_platform_set_printf(UART_Printf);
 	uint16_t ret; 
     ret = ESAL_PKA_FirmwareInit(PKA_BYTELANE_BIG);

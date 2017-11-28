@@ -85,13 +85,13 @@ void initializeESP8266()
   if (retVal != true)
   {
     Serial.println(F("Error talking to ESP8266."));
-    errorLoop(test);
+    errorLoop(retVal);
   }
   // set esp8266 single mode
-  retVal = setMux(0);
+  retVal = esp8266.setMux(0);
   if(!retVal){
     Serial.println(F("Error talking to ESP8266."));
-    errorLoop(test);
+    errorLoop(retVal);
   }
   Serial.println(F("ESP8266 Shield Present"));
 }

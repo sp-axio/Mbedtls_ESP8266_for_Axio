@@ -6,6 +6,7 @@ Axio-Builder Mbedtls Client with ESP8266
 Documentation
 -------------------
 * This code has been tested with the [mbedtls](https://github.com/ARMmbed/mbedtls.git) using the ESP8266 module.
+* To run this code, install the [ESP8266_for_Axio](https://github.com/sp-axio/ESP8266_for_Axio) library first.
 * Please refer to the [user manual page](https://sp-axio.github.io/2017/11/28/How-to-use-mbedtls-with-ESP8266.html) for details.
 * Please refer to [developer documentation](https://github.com/sp-axio/Mbedtls_ESP8266_for_Axio/blob/master/developer_documentation.md) for API of library.
 

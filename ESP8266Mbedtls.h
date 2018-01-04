@@ -4,7 +4,9 @@
 #include "Arduino.h"
 //#include <SoftwareSerial.h>
 #include "IPAddress.h"
+#include "Client.h"
 #include "ESP8266WiFi.h"
+#include "ESP8266Client.h"
 
 #include "clp300.h"
 #include "spacc.h"
@@ -35,16 +37,19 @@ enum exit_codes{
 	ssl_write_failed,
 };
 
-class ESP8266Mbedtls {
+class ESP8266Mbedtls : public ESP8266Client {
 public:
 	ESP8266Mbedtls();
 	ESP8266Mbedtls(uint8_t sock);
 
-	uint8_t status();
 	uint8_t setupSSL();
 	int connect(const char* host, uint16_t port, uint32_t ka);
 	int connectSSL();
 				
+	virtual size_t write(uint8_t);
+	virtual size_t write(const uint8_t *buf, size_t size);
+	virtual int read(uint8_t *buf, size_t size);
+
 	int writeSSL();
 	int writeSSL(char *req, int len);
 	int readSSL();
@@ -54,14 +59,9 @@ public:
 	void cleanupSSL();
 	uint8_t connectedSSL();
 
-	virtual int available();
-	virtual int read();
-	virtual int read(uint8_t *buf, size_t size);
-	virtual int peek();
-	virtual void flush();
-	//virtual uint8_t connected();
-	//virtual operator bool();
+	virtual uint8_t connected();
 	//using Print::write;
+
 private:
 	uint16_t  _socket;
 	static uint16_t _srcport;
@@ -75,7 +75,6 @@ private:
 	mbedtls_x509_crt *ca;
 	mbedtls_pk_context *pkey;
 #endif
-
 	uint8_t getFirstSocket();
 	int setup_ssl_context(int type);
 };

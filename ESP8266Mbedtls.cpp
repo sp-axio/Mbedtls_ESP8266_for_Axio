@@ -4,7 +4,6 @@
 #include "ESP8266Mbedtls.h"
 
 #define GET_REQUEST "GET / HTTP/1.0\r\n\r\n"
-
 extern Uart Serial;
 //extern esp8266;
 
@@ -14,6 +13,60 @@ static struct stat_t {
     uint32_t tx;
 } stat;
 
+
+/*
+const char mbedtls_test_cli_crt_ec[] =
+"-----BEGIN CERTIFICATE-----\r\n"
+"MIIDZTCCAk2gAwIBAgIJAOGkrFczx+WVMA0GCSqGSIb3DQEBCwUAMEkxCzAJBgNV\r\n"
+"BAYTAktSMQ4wDAYDVQQIDAVzZW91bDEOMAwGA1UEBwwFc2VvdWwxGjAYBgNVBAoM\r\n"
+"EXNlY3VyaXR5IHBsYXRmb3JtMB4XDTE3MTIwNDA2MjczMFoXDTI3MTIwMjA2Mjcz\r\n"
+"MFowSTELMAkGA1UEBhMCS1IxDjAMBgNVBAgMBXNlb3VsMQ4wDAYDVQQHDAVzZW91\r\n"
+"bDEaMBgGA1UECgwRc2VjdXJpdHkgcGxhdGZvcm0wggEiMA0GCSqGSIb3DQEBAQUA\r\n"
+"A4IBDwAwggEKAoIBAQDWOq76EowFFCqL8DJrdqKU2eV5hTgOSuYSSzT/1qaPTtTV\r\n"
+"0sa517uxT45ay4Z68xaOx4OVwnWTdEDXmGES6f/bAHXSJGMpUO9/UsLCSsfZX+LR\r\n"
+"izo83Ct09euUQO6exdtPG0HywRcLXlvG6cj0cyXqenmKkFaIjqGXif/MhSIE1qmi\r\n"
+"KI1Gopy/WqMsEQ1QajOepeICbKardvDQt1NsK3UnA5KWmNJfjkznNilY/EW7RrOP\r\n"
+"u8aucJylmlKtGCrwrR5cnPzkrKF2gvYRlsT5Y6MBkDHPVr3Nil0tBGGNYRBMePML\r\n"
+"BDaSVM85ak1ldZU1AhbU0VN4B6yrrSGrWgn6quIDAgMBAAGjUDBOMB0GA1UdDgQW\r\n"
+"BBQDRiXQeS0+jaGWBwM20T/6ktMPCTAfBgNVHSMEGDAWgBQDRiXQeS0+jaGWBwM2\r\n"
+"0T/6ktMPCTAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBxmj6VtqfW\r\n"
+"aVK+JoN2vSnohtm0WcKMJzI1++yqFpSc4MHM6GuhUjJArzq99p9axD9A+cYTJ3rC\r\n"
+"UMLlgmb9qcf0euYob6vCS6Lx+YIAPtGp77V4wIpRqPU+jYwU8Soz+ieFsmI4QIPM\r\n"
+"/uH9YFkbZpRTt0WJe3hx5R6VAx48He2MXT1CUoontCMOvftiiOskpMcjMjWFctAp\r\n"
+"GdJAIBdZkN9PuY7PGYsHdppNnsLBqdJBUoAJAIw8srDK8wcKpGkXnnopbvUqjvFn\r\n"
+"Su+r7M6hhSmgAcRsFGOmSNv9owTWerBdUosj83pgWgl+3S7eMYrDtJoxJek24z2X\r\n"
+"NZdvjm4ePhNZ\r\n"
+"-----END CERTIFICATE-----\r\n";
+*/
+
+/*
+const char mbedtls_test_cli_crt_ec2[] =
+"-----BEGIN CERTIFICATE-----\r\n"
+"MIICQzCCASsCCQCcFw9LW7SqhjANBgkqhkiG9w0BAQsFADBJMQswCQYDVQQGEwJL\r\n"
+"UjEOMAwGA1UECAwFc2VvdWwxDjAMBgNVBAcMBXNlb3VsMRowGAYDVQQKDBFzZWN1\r\n"
+"cml0eSBwbGF0Zm9ybTAeFw0xNzEyMDQwODE1NTdaFw0yNzEyMDIwODE1NTdaMEkx\r\n"
+"CzAJBgNVBAYTAktSMQ4wDAYDVQQIDAVzZW91bDEOMAwGA1UEBwwFc2VvdWwxGjAY\r\n"
+"BgNVBAoMEXNlY3VyaXR5IHBsYXRmb3JtMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcD\r\n"
+"QgAE31eOhMrgYysGKDz4UoIAXD4gZHDt3aksvkAtIKlVPvx0PzK1Y/zzO9kmqV6Q\r\n"
+"OsClB7S9DPp1Orq/eo/cqDvNIDANBgkqhkiG9w0BAQsFAAOCAQEA0RuvSevl/X0C\r\n"
+"DdvADbx6CTbufj6h8dD0wzeImVqRTCxQGWoBMCi2PcGi4vk9yqEMlJgTOBqCJy33\r\n"
+"4aCJOn6LxD89meqAA6A195cr0Ge3GmnBYUxiTOHx8R/0bydMssJ/WwhzZR7taEqR\r\n"
+"1Z0vsqJYVhN/kcB9rPhS5CeBgKMHowC8eK2hVpH7/3fXE/9qyFT6Bs3u/n3AfHGT\r\n"
+"4bkNA2NQpy4gd5NEGWwHC7fCycvTsVMK0dQWQGfX1CDEKr5wutuU5tNq0cxgq5Fy\r\n"
+"1SbTZRwsIjT7JLRxyVSdj4RxfpoTJJYbCllNgk2u+WFUn5zg65smlAYnV1HQ5z+o\r\n"
+"FuDmpJQRlg==\r\n"
+"-----END CERTIFICATE-----\r\n";
+
+const char mbedtls_test_cli_key_ec2[] = 
+"-----BEGIN EC PRIVATE KEY-----\r\n"
+"MHcCAQEEIOavZmpx5BEMD0aZ04WFGG1TCcvOz9VqwNOQy6d1KMb8oAoGCCqGSM49\r\n"
+"AwEHoUQDQgAE31eOhMrgYysGKDz4UoIAXD4gZHDt3aksvkAtIKlVPvx0PzK1Y/zz\r\n"
+"O9kmqV6QOsClB7S9DPp1Orq/eo/cqDvNIA==\r\n"
+"-----END EC PRIVATE KEY-----\r\n";
+
+const size_t mbedtls_test_cli_crt_ec2_len = sizeof( mbedtls_test_cli_crt_ec2 );
+const size_t mbedtls_test_cli_key_ec2_len = sizeof( mbedtls_test_cli_key_ec2);
+*/
 
 ESP8266Mbedtls::ESP8266Mbedtls()
 {
@@ -45,11 +98,6 @@ uint8_t ESP8266Mbedtls::setupSSL()
     ESAL_TRNG_Init();
 }
 
-uint8_t ESP8266Mbedtls::status()
-{
-	return esp8266.status();
-}
-	
 const unsigned char ca_cert[] = {
     0x30, 0x82, 0x02, 0x52, 0x30, 0x82, 0x01, 0xd7, 0xa0, 0x03, 0x02, 0x01,
     0x02, 0x02, 0x09, 0x00, 0xc1, 0x43, 0xe2, 0x7e, 0x62, 0x43, 0xcc, 0xe8,
@@ -126,7 +174,7 @@ int ESP8266Mbedtls::setup_ssl_context(int transport_type)
     mbedtls_ctr_drbg_init( ctr_drbg );
 
 #ifdef MBEDTLS_DEBUG_C
-	mbedtls_debug_set_threshold(1);
+	mbedtls_debug_set_threshold(3);
 #endif
 	MBEDTLS_SSL_DEBUG_MSG(3, ("\nStart setup_ssl_context \n"));
     /*
@@ -187,6 +235,7 @@ int ESP8266Mbedtls::setup_ssl_context(int transport_type)
 
     //ret = mbedtls_x509_crt_parse( clicert, (const unsigned char *) mbedtls_test_cas_pem, mbedtls_test_cas_pem_len );
     ret = mbedtls_x509_crt_parse( clicert, (const unsigned char *) mbedtls_test_cli_crt_ec, mbedtls_test_cli_crt_ec_len );
+    //ret = mbedtls_x509_crt_parse( clicert, (const unsigned char *) mbedtls_test_cli_crt_ec2, mbedtls_test_cli_crt_ec2_len );
     if( ret != 0 )
     {
         //UART_Printf( " failed\n  !  mbedtls_x509_crt_parse returned -0x%x\n\n", -ret );
@@ -209,7 +258,8 @@ int ESP8266Mbedtls::setup_ssl_context(int transport_type)
         goto exit;
     }
 
-    mbedtls_ssl_conf_authmode( conf, MBEDTLS_SSL_VERIFY_REQUIRED );
+    mbedtls_ssl_conf_authmode( conf, MBEDTLS_SSL_VERIFY_NONE);
+    //mbedtls_ssl_conf_authmode( conf, MBEDTLS_SSL_VERIFY_REQUIRED );
 #endif
 
     if( mbedtls_ssl_setup( ssl, conf ) != 0 )
@@ -250,11 +300,26 @@ int ESP8266Mbedtls::connect(const char* host, uint16_t port, uint32_t keepAlive)
 	
     if (_socket != ESP8266_SOCK_NOT_AVAIL)
     {
-		esp8266._state[_socket] = TAKEN;
+		//esp8266._state[_socket] = TAKEN;
+		esp8266.setState(_socket, TAKEN); //_state[_socket] = TAKEN;
 		int16_t rsp = esp8266.tcpConnect(_socket, host, port, keepAlive);
 		return rsp;
 	}
 	return -1;
+}
+uint8_t ESP8266Mbedtls::connected()
+{
+	// If data is available, assume we're connected. Otherwise,
+	// we'll try to send the status query, and will probably end 
+	// up timing out if data is still coming in.
+	if (_socket == ESP8266_SOCK_NOT_AVAIL)
+		return 0;
+	else if (available() > 0)
+		return 1;
+	else if (status() == ESP8266_STATUS_CONNECTED)
+		return 1;
+	
+	return 0;
 }
 
 uint8_t ESP8266Mbedtls::connectedSSL(){
@@ -281,16 +346,19 @@ int ESP8266Mbedtls::writeSSL(char *req, int len)
 {
 	int ret ;
 	
+	/*
 	MBEDTLS_SSL_DEBUG_MSG(3, ("============= write message begin =============="));
 	MBEDTLS_SSL_DEBUG_MSG(3, (req));
 	MBEDTLS_SSL_DEBUG_MSG(3, ("============= write message done ==============="));
-
+	*/
 	while((ret = mbedtls_ssl_write(ssl, (const unsigned char *)req, len)) <= 0){
 		if(ret != MBEDTLS_ERR_SSL_WANT_READ && ret != MBEDTLS_ERR_SSL_WANT_WRITE){
-			return ssl_write_failed;
+			return -1;
+			//return ssl_write_failed;
 		}
 	}
-	return exit_ok; 
+	return len; 
+	//return exit_ok; 
 }
 
 int ESP8266Mbedtls::writeSSL()
@@ -300,6 +368,16 @@ int ESP8266Mbedtls::writeSSL()
 	
 	len = sprintf((char *)req, GET_REQUEST);
 	return writeSSL((char *)req, len);
+}
+
+size_t ESP8266Mbedtls::write(uint8_t c)
+{
+	return writeSSL((char *)&c, 1);
+}
+
+size_t ESP8266Mbedtls::write(const uint8_t *buf, size_t size)
+{
+	return writeSSL((char *)buf, size);
 }
 
 int ESP8266Mbedtls::readSSL(unsigned char *buf, int len){
@@ -340,52 +418,37 @@ int ESP8266Mbedtls::readSSL(){
 }
 
 
-int ESP8266Mbedtls::available()
-{
-	int available = esp8266.available();
-	if (available == 0)
-	{
-		// Delay for the amount of time it'd take to receive one character
-		delayMicroseconds((1 / esp8266._baud) * 10 * 1E6);
-		// Check again just to be sure:
-		available = esp8266.available();
-	}
-	return esp8266.available();
-}
-
-int ESP8266Mbedtls::read()
-{
-	return esp8266.read();
-}
-
 int ESP8266Mbedtls::read(uint8_t *buf, size_t size)
 {
-	if (esp8266.available() < (int)size)
-		return 0;
-	
-	for (int i=0; i<(int)size; i++)
-	{
-		buf[i] = esp8266.read();
-	}
-	
-	return 1;
-}
-
-
-int ESP8266Mbedtls::peek()
-{
-	return esp8266.peek();
-}
-
-void ESP8266Mbedtls::flush()
-{
-	esp8266.flush();
+	int ret;
+	do{
+		ret = mbedtls_ssl_read(ssl, buf, size);
+		
+		if(ret == MBEDTLS_ERR_SSL_WANT_READ || ret == MBEDTLS_ERR_SSL_WANT_WRITE)
+			continue;
+		if(ret == MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY){
+			MBEDTLS_SSL_DEBUG_MSG(1, ("error! peer close"));
+			break;
+		}
+		if(ret < 0){
+			MBEDTLS_SSL_DEBUG_MSG(1, ("mbedtls_ssl_read failed"));
+			break;
+		}
+		if(ret == 0){
+			MBEDTLS_SSL_DEBUG_MSG(1, ("EOF"));
+			break;
+		}
+		
+		break;
+	}while(1);
+	return ret;
 }
 
 void ESP8266Mbedtls::stopSSL()
 {
 	esp8266.close(_socket);
-	esp8266._state[_socket] = AVAILABLE;
+	//esp8266._state[_socket] = AVAILABLE;
+	esp8266.setState(_socket, AVAILABLE);
 }
 
 void ESP8266Mbedtls::closeSSL(){
@@ -407,16 +470,6 @@ void ESP8266Mbedtls::cleanupSSL()
 
 uint8_t ESP8266Mbedtls::getFirstSocket()
 {
-	/*
-	for (int i = 0; i < ESP8266_MAX_SOCK_NUM; i++) 
-	{
-		if (esp8266._state[i] == AVAILABLE)
-		{
-			return i;
-		}
-	}
-	return ESP8266_SOCK_NOT_AVAIL;
-	*/
 	// single connection
 	esp8266.updateStatus();
 	if(0 == esp8266.getMux()){
@@ -425,21 +478,12 @@ uint8_t ESP8266Mbedtls::getFirstSocket()
 	else{ // multiple connection
 		for (int i = 0; i < ESP8266_MAX_SOCK_NUM; i++) 
 		{
-			if (esp8266._status.ipstatus[i].linkID == 255)
+			//if (esp8266._status.ipstatus[i].linkID == 255)
+			if (esp8266.getLinkID(i) == 255)
 			{
 				return i;
 			}
 		}
 		return ESP8266_SOCK_NOT_AVAIL;
 	}
-	/*
-	for (int i = 0; i < ESP8266_MAX_SOCK_NUM; i++) 
-	{
-		if (esp8266._status.ipstatus[i].linkID == 255)
-		{
-			return i;
-		}
-	}
-	return ESP8266_SOCK_NOT_AVAIL;
-	*/
 }

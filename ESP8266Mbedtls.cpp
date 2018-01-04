@@ -13,61 +13,6 @@ static struct stat_t {
     uint32_t tx;
 } stat;
 
-
-/*
-const char mbedtls_test_cli_crt_ec[] =
-"-----BEGIN CERTIFICATE-----\r\n"
-"MIIDZTCCAk2gAwIBAgIJAOGkrFczx+WVMA0GCSqGSIb3DQEBCwUAMEkxCzAJBgNV\r\n"
-"BAYTAktSMQ4wDAYDVQQIDAVzZW91bDEOMAwGA1UEBwwFc2VvdWwxGjAYBgNVBAoM\r\n"
-"EXNlY3VyaXR5IHBsYXRmb3JtMB4XDTE3MTIwNDA2MjczMFoXDTI3MTIwMjA2Mjcz\r\n"
-"MFowSTELMAkGA1UEBhMCS1IxDjAMBgNVBAgMBXNlb3VsMQ4wDAYDVQQHDAVzZW91\r\n"
-"bDEaMBgGA1UECgwRc2VjdXJpdHkgcGxhdGZvcm0wggEiMA0GCSqGSIb3DQEBAQUA\r\n"
-"A4IBDwAwggEKAoIBAQDWOq76EowFFCqL8DJrdqKU2eV5hTgOSuYSSzT/1qaPTtTV\r\n"
-"0sa517uxT45ay4Z68xaOx4OVwnWTdEDXmGES6f/bAHXSJGMpUO9/UsLCSsfZX+LR\r\n"
-"izo83Ct09euUQO6exdtPG0HywRcLXlvG6cj0cyXqenmKkFaIjqGXif/MhSIE1qmi\r\n"
-"KI1Gopy/WqMsEQ1QajOepeICbKardvDQt1NsK3UnA5KWmNJfjkznNilY/EW7RrOP\r\n"
-"u8aucJylmlKtGCrwrR5cnPzkrKF2gvYRlsT5Y6MBkDHPVr3Nil0tBGGNYRBMePML\r\n"
-"BDaSVM85ak1ldZU1AhbU0VN4B6yrrSGrWgn6quIDAgMBAAGjUDBOMB0GA1UdDgQW\r\n"
-"BBQDRiXQeS0+jaGWBwM20T/6ktMPCTAfBgNVHSMEGDAWgBQDRiXQeS0+jaGWBwM2\r\n"
-"0T/6ktMPCTAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBxmj6VtqfW\r\n"
-"aVK+JoN2vSnohtm0WcKMJzI1++yqFpSc4MHM6GuhUjJArzq99p9axD9A+cYTJ3rC\r\n"
-"UMLlgmb9qcf0euYob6vCS6Lx+YIAPtGp77V4wIpRqPU+jYwU8Soz+ieFsmI4QIPM\r\n"
-"/uH9YFkbZpRTt0WJe3hx5R6VAx48He2MXT1CUoontCMOvftiiOskpMcjMjWFctAp\r\n"
-"GdJAIBdZkN9PuY7PGYsHdppNnsLBqdJBUoAJAIw8srDK8wcKpGkXnnopbvUqjvFn\r\n"
-"Su+r7M6hhSmgAcRsFGOmSNv9owTWerBdUosj83pgWgl+3S7eMYrDtJoxJek24z2X\r\n"
-"NZdvjm4ePhNZ\r\n"
-"-----END CERTIFICATE-----\r\n";
-*/
-
-/*
-const char mbedtls_test_cli_crt_ec2[] =
-"-----BEGIN CERTIFICATE-----\r\n"
-"MIICQzCCASsCCQCcFw9LW7SqhjANBgkqhkiG9w0BAQsFADBJMQswCQYDVQQGEwJL\r\n"
-"UjEOMAwGA1UECAwFc2VvdWwxDjAMBgNVBAcMBXNlb3VsMRowGAYDVQQKDBFzZWN1\r\n"
-"cml0eSBwbGF0Zm9ybTAeFw0xNzEyMDQwODE1NTdaFw0yNzEyMDIwODE1NTdaMEkx\r\n"
-"CzAJBgNVBAYTAktSMQ4wDAYDVQQIDAVzZW91bDEOMAwGA1UEBwwFc2VvdWwxGjAY\r\n"
-"BgNVBAoMEXNlY3VyaXR5IHBsYXRmb3JtMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcD\r\n"
-"QgAE31eOhMrgYysGKDz4UoIAXD4gZHDt3aksvkAtIKlVPvx0PzK1Y/zzO9kmqV6Q\r\n"
-"OsClB7S9DPp1Orq/eo/cqDvNIDANBgkqhkiG9w0BAQsFAAOCAQEA0RuvSevl/X0C\r\n"
-"DdvADbx6CTbufj6h8dD0wzeImVqRTCxQGWoBMCi2PcGi4vk9yqEMlJgTOBqCJy33\r\n"
-"4aCJOn6LxD89meqAA6A195cr0Ge3GmnBYUxiTOHx8R/0bydMssJ/WwhzZR7taEqR\r\n"
-"1Z0vsqJYVhN/kcB9rPhS5CeBgKMHowC8eK2hVpH7/3fXE/9qyFT6Bs3u/n3AfHGT\r\n"
-"4bkNA2NQpy4gd5NEGWwHC7fCycvTsVMK0dQWQGfX1CDEKr5wutuU5tNq0cxgq5Fy\r\n"
-"1SbTZRwsIjT7JLRxyVSdj4RxfpoTJJYbCllNgk2u+WFUn5zg65smlAYnV1HQ5z+o\r\n"
-"FuDmpJQRlg==\r\n"
-"-----END CERTIFICATE-----\r\n";
-
-const char mbedtls_test_cli_key_ec2[] = 
-"-----BEGIN EC PRIVATE KEY-----\r\n"
-"MHcCAQEEIOavZmpx5BEMD0aZ04WFGG1TCcvOz9VqwNOQy6d1KMb8oAoGCCqGSM49\r\n"
-"AwEHoUQDQgAE31eOhMrgYysGKDz4UoIAXD4gZHDt3aksvkAtIKlVPvx0PzK1Y/zz\r\n"
-"O9kmqV6QOsClB7S9DPp1Orq/eo/cqDvNIA==\r\n"
-"-----END EC PRIVATE KEY-----\r\n";
-
-const size_t mbedtls_test_cli_crt_ec2_len = sizeof( mbedtls_test_cli_crt_ec2 );
-const size_t mbedtls_test_cli_key_ec2_len = sizeof( mbedtls_test_cli_key_ec2);
-*/
-
 ESP8266Mbedtls::ESP8266Mbedtls()
 {
 	ssl = (mbedtls_ssl_context *)calloc(1, sizeof(mbedtls_ssl_context));	
@@ -174,7 +119,7 @@ int ESP8266Mbedtls::setup_ssl_context(int transport_type)
     mbedtls_ctr_drbg_init( ctr_drbg );
 
 #ifdef MBEDTLS_DEBUG_C
-	mbedtls_debug_set_threshold(3);
+	mbedtls_debug_set_threshold(1);
 #endif
 	MBEDTLS_SSL_DEBUG_MSG(3, ("\nStart setup_ssl_context \n"));
     /*
@@ -346,11 +291,6 @@ int ESP8266Mbedtls::writeSSL(char *req, int len)
 {
 	int ret ;
 	
-	/*
-	MBEDTLS_SSL_DEBUG_MSG(3, ("============= write message begin =============="));
-	MBEDTLS_SSL_DEBUG_MSG(3, (req));
-	MBEDTLS_SSL_DEBUG_MSG(3, ("============= write message done ==============="));
-	*/
 	while((ret = mbedtls_ssl_write(ssl, (const unsigned char *)req, len)) <= 0){
 		if(ret != MBEDTLS_ERR_SSL_WANT_READ && ret != MBEDTLS_ERR_SSL_WANT_WRITE){
 			return -1;
